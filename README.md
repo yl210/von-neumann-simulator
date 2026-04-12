@@ -23,4 +23,4 @@ https://www.cs.cmu.edu/~112/notes/project.html
 4/17: control panel <br>
 4/18: control panel <br>
 
-Goal: finish by 4/20
+goal: finish by 4/20
