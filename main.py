@@ -3,7 +3,7 @@ import sys
 import core, programs, tests, ui
 
 def main():
-    core.cpu.main()
+    core.cpu.run_cpu()
 
 
     

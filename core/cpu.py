@@ -21,24 +21,24 @@ def initGPR():
 def fetch(pc, ir, ram):
     currentAddress = pc.getCounter()
     ram_data = ram.read_from_ram(currentAddress)
+    #print(f'ram_data: {ram_data}')
 
     if ram_data != None:
         ir.load_new_instruction(ram_data)
         ir_data = ir.read_from_ir()
         ir.set_opcode(ir_data)
         ir.set_operand(ir_data)
-        print(f'ADDR:{pc.getCounter()}  OP: {bin(ir.opcode)}  OPE: {bin(ir.operand)}')
-    pc.increment_counter()
-    # how to bypass addresses with no data
-
-    
+        pc.increment_counter()
+    else:
+        # claude: error handling
+        raise ValueError('no data stored at address')
 
 def decode(dc, op):
     return (op, dc[op])
 
 def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
     selected = dc_out[0]
-    print(f'selected: {selected}')
+    #print(f'selected: {selected}')
 
     # registers
     if selected < 4:
@@ -46,9 +46,9 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         if selected == 0 and alu.outputs != dict():
             active_reg.write_to_reg(alu.outputs[alu.output_type])
         else:
-            print(f'operand: {ir.operand}')
+            #print(f'operand: {ir.operand}')
             data = ram.read_from_ram(ir.operand)
-            print(f'ram_data: {data}')
+            #print(f'ram_data: {data}')
             active_reg.write_to_reg(data)
 
     # mux
@@ -56,7 +56,7 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         mux_input = ir.operand #ir.get_operand(ir_data)
         register_num = mux.get_linked_register(mux_input)
         mux.set_mux_output(gpr[register_num])
-        print(f'mux_output: {mux.get_mux_output()}')
+        #print(f'mux_output: {mux.get_mux_output()}')
 
     # demux
     elif selected == 5:
@@ -71,7 +71,7 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         #print(f'a: {a}, b: {b}')
         if alu.has_valid_inputs(a, b):
             alu.output_type = alu.add()
-            print(f'alu_output: {format_byte(alu.outputs[alu.output_type])}')
+          #  print(f'alu_output: {format_byte(alu.outputs[alu.output_type])}')
 
     # subtract
     elif selected == 7:
@@ -80,7 +80,7 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         #print(f'a: {a}, b: {b}')
         if alu.has_valid_inputs(a, b):
             alu.output_type = alu.sub()
-            print(f'alu_output: {format_byte(alu.outputs[alu.output_type])}')
+        #    print(f'alu_output: {format_byte(alu.outputs[alu.output_type])}')
 
     # N-flag
     elif selected == 8:
@@ -95,10 +95,10 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         data = active_reg.read_reg()
         ram.write_to_ram(ir.operand, data)
 
-def main():
+def run_cpu():
 
     running = True
-    fetching = False
+    fetching = True
     decoding = False
     executing = False
 
@@ -114,34 +114,41 @@ def main():
 
     while running:
 
-        fetching = not fetching
+        #print(f'fetching: {fetching} decoding: {decoding} executing: {executing}')
 
         if fetching:
-            fetch(pc, ir, ram)
-            fetching = not fetching
-
-        decoding = not decoding
+            try:
+                fetch(pc, ir, ram)
+                fetching = False
+                decoding = True
+            # claude: error handling
+            except ValueError:
+                running = False
         
-        if decoding:
+        elif decoding:
             ir_data = ir.read_from_ir()
-            op = ir.opcode #ir.get_opcode(ir_data)
+            op = ir.opcode
 
             dc_output = decode(dc.get_decoder(), op)
-            decoding = not decoding
-        
-        executing = not executing
+            decoding = False
+            executing = True
 
-        if executing:
+        elif executing:
             execute(dc_output, ir_data, gpr, ram, mux, demux, ir, alu, pc)
-            executing = not executing
+            executing = False
+            fetching = True
 
         if pc.getCounter() > len(ram.get_ram())-1:
             running = False
-
+        
+        
+        print(f'ADDR:{pc.getCounter()}  OP: {bin(ir.opcode)}  OPE: {bin(ir.operand)}')
         print(f'gpr: {gpr}')
         print(f'demux: {demux.get_demux()}')
         print(f'ram: {repr(ram)}')
+        #print(f'fetching: {fetching} decoding: {decoding} executing: {executing}')
         print('\n')
     
+    
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(run_cpu())

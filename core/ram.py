@@ -22,7 +22,7 @@ class RAM:
             15 : 0b00001100
         }          
     
-    # asked chat to help fix this
+    # chat: caught i was building a string but returning None
     def __repr__(self):
         result = '{\n'
         for key in self.ram:

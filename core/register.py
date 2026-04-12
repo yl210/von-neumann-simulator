@@ -2,7 +2,7 @@ from utils import format_byte
 
 class Register:
     def __init__(self, data):
-        self.data = data # 8-bit data
+        self.data = data
 
     def __repr__(self):
         return f'({format_byte(self.data)})'
