@@ -1,6 +1,6 @@
 # z18100 simulator
 
-15112 final project
+15112 final project <br>
 https://www.cs.cmu.edu/~112/notes/project.html
 
 **project requirements**
@@ -15,12 +15,12 @@ https://www.cs.cmu.edu/~112/notes/project.html
 - grading shortcuts
 
 **project timeline**
-4/12: assembler\n
-4/13: loader & test program\n
-4/14: start configuring main window, ram and register displays\n
-4/15: finish displays, start schematic view\n
-4/16: finish schematic view\n
-4/17: control panel\n
-4/18: control panel\n
+4/12: assembler <br>
+4/13: loader & test program <br>
+4/14: start configuring main window, ram and register displays <br>
+4/15: finish displays, start schematic view <br>
+4/16: finish schematic view <br>
+4/17: control panel <br>
+4/18: control panel <br>
 
 Goal: finish by 4/20
