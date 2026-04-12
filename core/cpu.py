@@ -1,7 +1,22 @@
 import sys
 
+from register import Register, ProgramCounter, InstructionRegister
+from ram import RAM
+from mux import MUX
+from demux import DEMUX
+from decoder import Decoder
+from alu import ALU
 from utils import *
 
+
+def initGPR():
+    gpr = []
+    r0 = Register(None)
+    r1 = Register(None)
+    r2 = Register(None)
+    r3 = Register(None)
+    gpr.extend([r0, r1, r2, r3])
+    return gpr
 
 def fetch(pc, ir, ram):
     currentAddress = pc.getCounter()
@@ -80,12 +95,22 @@ def execute(dc_out, ir_data, gpr, ram, mux, demux, ir, alu, pc):
         data = active_reg.read_reg()
         ram.write_to_ram(ir.operand, data)
 
-def run_cpu(pc, ir, ram, dc, gpr, mux, demux, alu):
+def run_cpu():
 
     running = True
     fetching = True
     decoding = False
     executing = False
+
+    gpr = initGPR()
+    pc = ProgramCounter(0)
+    ir = InstructionRegister(0)
+    ram = RAM()
+    mux = MUX()
+    dc = Decoder()
+    demux = DEMUX()
+    alu = ALU()
+    
 
     while running:
 
