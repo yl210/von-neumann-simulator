@@ -52,4 +52,12 @@ class InstructionRegister(Register):
 
     def read_from_ir(self):
         return self.data
-    
+
+def initGPR():
+    gpr = []
+    r0 = Register(None)
+    r1 = Register(None)
+    r2 = Register(None)
+    r3 = Register(None)
+    gpr.extend([r0, r1, r2, r3])
+    return gpr
