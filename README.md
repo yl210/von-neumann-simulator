@@ -14,7 +14,7 @@ https://www.cs.cmu.edu/~112/notes/project.html
 - feature list
 - grading shortcuts
 
-**project timeline**
+**project timeline** <br>
 4/12: assembler <br>
 4/13: loader & test program <br>
 4/14: start configuring main window, ram and register displays <br>
