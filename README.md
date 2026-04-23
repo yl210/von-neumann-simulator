@@ -1,4 +1,4 @@
-# z18100 simulator
+# Von Neumann Computer Architecture Simulator
 
 15112 final project <br>
 https://www.cs.cmu.edu/~112/notes/project.html
