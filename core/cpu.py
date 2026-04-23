@@ -1,5 +1,6 @@
 import sys
 
+<<<<<<< Updated upstream
 from register import Register, ProgramCounter, InstructionRegister
 from ram import RAM
 from mux import MUX
@@ -7,6 +8,9 @@ from demux import DEMUX
 from decoder import Decoder
 from alu import ALU
 from utils import *
+=======
+from core.utils import *
+>>>>>>> Stashed changes
 
 
 def initGPR():
@@ -135,6 +139,11 @@ def run_cpu():
 
         elif executing:
             execute(dc_output, ir_data, gpr, ram, mux, demux, ir, alu, pc)
+            print(f'ADDR:{pc.getCounter()}  OP: {bin(ir.opcode)}  OPE: {bin(ir.operand)}')
+            print(f'gpr: {gpr}')
+            print(f'demux: {demux.get_demux()}')
+            print(f'ram: {repr(ram)}')
+            print('\n')
             executing = False
             fetching = True
 
@@ -142,13 +151,13 @@ def run_cpu():
             running = False
         
         
-        print(f'ADDR:{pc.getCounter()}  OP: {bin(ir.opcode)}  OPE: {bin(ir.operand)}')
-        print(f'gpr: {gpr}')
-        print(f'demux: {demux.get_demux()}')
-        print(f'ram: {repr(ram)}')
+        
         #print(f'fetching: {fetching} decoding: {decoding} executing: {executing}')
-        print('\n')
-    
-    
+        
+
+'''
 if __name__ == '__main__':
     sys.exit(run_cpu())
+'''
+    
+

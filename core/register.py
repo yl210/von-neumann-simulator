@@ -1,11 +1,11 @@
-from utils import format_byte
+from core.utils import format_byte
 
 class Register:
     def __init__(self, data):
         self.data = data
 
     def __repr__(self):
-        return f'({format_byte(self.data)})'
+        return f'{format_byte(self.data)}'
 
     def read_reg(self):
         return self.data

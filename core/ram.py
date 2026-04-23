@@ -1,4 +1,4 @@
-from utils import format_byte
+from core.utils import format_byte
 
 class RAM:
 
