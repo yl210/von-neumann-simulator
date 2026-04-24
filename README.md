@@ -24,7 +24,7 @@ So taken together 0001 and 1110 mean: 'write the data from the 13th line in RAM 
 
 ### Decoding Instructions
 The decoder can take inputs from 0-9. In my program, here is the key in the Decoder class:
-'''
+```
 self.decoder = {
             0 : 'Writing to Register 0',
             1 : 'Writing to Register 1',
@@ -37,7 +37,7 @@ self.decoder = {
             8 : 'Testing if result is negative',
             9 : 'Writing result to RAM',
         }
-  '''
+  ```
 
 
 
