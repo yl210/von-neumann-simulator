@@ -14,6 +14,16 @@ The components of von Neumann architecture are:
 - arithmetic logic unit: the unit that we can specify to perform adding/subtracting/detecting 0, etc.
 - program counter: keeps track of the current address we are reading from
 
+This gives itself nicely to object-oriented programming, so my code is organized like so:
+- '''alu.py'''
+- '''cpu.py'''
+- '''decoder.py'''
+- '''demux.py'''
+- '''mux.py'''
+- '''ram.py'''
+- '''register.py'''
+- '''utils.py'''
+
 ## Moving Through the Computer
 
 ### Interpreting Instructions
