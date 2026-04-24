@@ -18,6 +18,7 @@ def initGPR():
     return gpr
 
 # CPU CYCLE FEATURE: fetch, decode, execute functions
+# see ui.py line 191 for integrated CPU state machine 
 def fetch(pc, ir, ram):
     currentAddress = pc.getCounter()
     ram_data = ram.read_from_ram(currentAddress)

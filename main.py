@@ -1,10 +1,7 @@
-# explanation!!!
-
 import sys
 
 import core, ui
 from core.alu import ALU
-#from core.cpu import run_cpu, fetch, decode, execute
 from core.cpu import initGPR
 from core.decoder import Decoder
 from core.demux import DEMUX
