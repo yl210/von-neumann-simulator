@@ -1,17 +1,21 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QFrame
 
 class RegisterDisplay(QWidget):
     def __init__(self):
         super().__init__()
         layout = QHBoxLayout(self)
         self.labels = []
-        for i in range(4):
-            label = QLabel(f"R{i}: 00000000")
-            label.setStyleSheet("font-family: monospace; border: 0.25px solid gray; padding: 5px;")
+        for i in range(3, -1, -1):
+            label = QFrame(f"R{i}: 00000000")
+            label.setFrameShape(QFrame.Shape.Box)
+            label.setLineWidth(2)
+            label.setStyleSheet("font-family: monospace; font-size: 13px; margin-bottom: 3px; background-color: #e7f6ff;")
             layout.addWidget(label)
             self.labels.append(label)
 
     def update_values(self, values):
-        for i, val in enumerate(values):
+        for i, val in enumerate(values[::-1]):
             #self.labels[i].setText(f"R{i}: {val:08b}")
+            self.labels[i].setStyleSheet("font-family: monospace; font-size: 13px; margin-bottom: 3px; background-color: #e7f6ff;")
             self.labels[i].setText(f"R{i}: {val}")
+    

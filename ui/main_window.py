@@ -1,12 +1,15 @@
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableWidget, QHeaderView, QTableWidgetItem
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTableWidget, QHeaderView, QTableWidgetItem, QFrame
 from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QPainter, QPen, QPixmap
 from core.cpu import *
+from ui.alu_symbol import ALUSymbol
+from ui.background import Background
 
 class EmulatorGUI(QMainWindow):
     def __init__(self, pc, ir, ram, dc, gpr, mx, dx, alu):
         super().__init__()
         # Window size
-        self.setFixedSize(1000, 720)
+        self.setFixedSize(1000, 780)
         self.setWindowTitle("Von Neumann Computer Architecture Simulator")
 
         # Initial State
@@ -20,26 +23,30 @@ class EmulatorGUI(QMainWindow):
         self.dx = dx
         self.alu = alu
 
-        # state
+        # state machine
         self.state_types = ['Fetching', 'Decoding', 'Executing', 'Completed']
         self.state_counter = 0
 
+        self.dc_output = None
+
         # --- MAIN LAYOUT ---
-        central_widget = QWidget()
+        central_widget = Background('C:/Users/yliao/Documents/GitHub/z18100-simulator/wire overlay.png')
         self.setCentralWidget(central_widget)
+
         main_v_layout = QVBoxLayout(central_widget)
 
         # 1. TOP SECTION: Registers (Horizontally across)
+        main_v_layout.addSpacing(20)
         reg_h_layout = QHBoxLayout()
         self.reg_labels = []
         for i in range(4):
             lbl = QLabel(f"R{i}: 0")
             lbl.setStyleSheet("""
                 font-family: 'Segoe UI', sans-serif; 
-                font-size: 16px;
+                font-size: 13px;
                 border: 2px solid #444; 
                 padding: 15px; 
-                background: #fdfdfd;
+                background: #ffffff;
             """)
             lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
             reg_h_layout.addWidget(lbl)
@@ -53,19 +60,78 @@ class EmulatorGUI(QMainWindow):
 
         # --- LEFT SIDE: ALU Symbol and Buttons ---
         left_side_container = QVBoxLayout()
-        '''
-        # **NEW: LARGE ALU SYMBOL**
+        left_side_container.setSpacing(4)
+
+        # mux
+        self.mux_frame = QFrame()
+        self.mux_frame.setFrameShape(QFrame.Shape.Box)
+        self.mux_frame.setLineWidth(2)
+        self.mux_frame.setFixedSize(400,80)
+        self.mux_frame.setStyleSheet("background-color: #e7f6ff;")
+
+        mux_v = QVBoxLayout(self.mux_frame)
+        mux_v.setContentsMargins(5, 10, 5, 10)
+        mux_v.setSpacing(20)
+
+        mux_connect = QHBoxLayout()
+        mux_connect.setSpacing(0)
+        for i in range(4):
+            label = QLabel(f"D{i}")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setStyleSheet("font-family: monospace; font-size: 13px;")
+            mux_connect.addWidget(label)
+        mux_v.addLayout(mux_connect)
+
+        mux_label = QLabel('MUX')
+        mux_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mux_label.setStyleSheet("font-family: monospace; font-size: 15px; font-weight: bold;")
+        mux_v.addWidget(mux_label)
+
+        mux_v.addStretch()
+        left_side_container.addWidget(self.mux_frame)
+        left_side_container.addSpacing(30)
+
+        # demux
+        self.demux_frame = QFrame()
+        self.demux_frame.setFrameShape(QFrame.Shape.Box)
+        self.demux_frame.setLineWidth(2)
+        self.demux_frame.setFixedSize(400,80)
+        self.demux_frame.setStyleSheet("background-color: #e7f6ff;")
+        left_side_container.addWidget(self.demux_frame)
+
+        demux_v = QVBoxLayout(self.demux_frame)
+        demux_v.setContentsMargins(5, 10, 5, 10)
+        demux_v.setSpacing(20)
+
+        demux_connect = QHBoxLayout()
+        demux_connect.setSpacing(0)
+        for i in range(2):
+            label = QLabel(f"F{i}")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setStyleSheet("font-family: monospace; font-size: 13px;")
+            demux_connect.addWidget(label)
+        demux_v.addLayout(demux_connect)
+
+        demux_label = QLabel('DEMUX')
+        demux_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        demux_label.setStyleSheet("font-family: monospace; font-size: 15px; font-weight: bold;")
+        demux_v.addWidget(demux_label)
+
+        demux_v.addStretch()
+        left_side_container.addWidget(self.demux_frame)
+        left_side_container.addSpacing(-10)
+
         self.alu_symbol = ALUSymbol()
         left_side_container.addWidget(self.alu_symbol)
-        '''
+
+
         left_side_container.addStretch() # Push buttons to the bottom
-        
         button_h_layout = QHBoxLayout()
         self.step_btn = QPushButton("MANUAL STEP")
-        self.step_btn.setFixedHeight(60)
+        self.step_btn.setFixedSize(200, 60)
         self.auto_btn = QPushButton("AUTO RUN")
         self.auto_btn.setCheckable(True)
-        self.auto_btn.setFixedHeight(60)
+        self.auto_btn.setFixedSize(200,60)
         
         button_h_layout.addWidget(self.step_btn)
         button_h_layout.addWidget(self.auto_btn)
@@ -77,17 +143,17 @@ class EmulatorGUI(QMainWindow):
         right_side_container = QVBoxLayout()
         
         # Program Counter Text (Reduced)
-        
-        pc_state_container = QHBoxLayout()
-        self.pc_label = QLabel(f"PC: {self.pc}")
+        self.pc_label = QLabel(f"Program Counter: {self.pc}")
         self.state_label = QLabel(f'Current State: {self.get_state()}')
-        self.pc_label.setStyleSheet("font-family: monospace; font-size: 16px; font-weight: bold; margin-bottom: 5px;")
-        self.state_label.setStyleSheet("font-family: monospace; font-size: 16px; font-weight: bold; margin-bottom: 5px;")
+        self.decode_label = QLabel(f'Decoder Selection: {self.dc.output}')
+        self.pc_label.setStyleSheet("font-family: monospace; font-size: 12px; font-weight: bold; margin-bottom: 3px; color: #4292C6;")
+        self.state_label.setStyleSheet("font-family: monospace; font-size: 12px; font-weight: bold; margin-bottom: 3px;")
+        self.decode_label.setStyleSheet("font-family: monospace; font-size: 12px; font-weight: bold; margin-bottom: 3px;")
         self.state_label.setFixedWidth(210)
-        #self.pc_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        pc_state_container.addWidget(self.pc_label)
-        pc_state_container.addWidget(self.state_label)
-        right_side_container.addLayout(pc_state_container)
+        self.decode_label.setFixedWidth(300)
+        right_side_container.addWidget(self.pc_label)
+        right_side_container.addWidget(self.state_label)
+        right_side_container.addWidget(self.decode_label)
 
         # RAM Table
         self.ram_table = QTableWidget(16, 2)
@@ -133,11 +199,13 @@ class EmulatorGUI(QMainWindow):
             self.dc_output = decode(self.dc.get_decoder(), op)
         elif state == 'Executing':
             execute(self.dc_output, self.ir_data, self.gpr, self.ram, self.mx, self.dx, self.ir, self.alu, self.pc)
+            '''
             print(f'ADDR:{self.pc.getCounter()}  OP: {bin(self.ir.opcode)}  OPE: {bin(self.ir.operand)}')
             print(f'gpr: {self.gpr}')
             print(f'demux: {self.dx.get_demux()}')
             print(f'ram: {repr(self.ram)}')
             print('\n')
+            '''
 
         self.state_counter += 1
         self.refresh_ui()
@@ -145,26 +213,51 @@ class EmulatorGUI(QMainWindow):
     def get_state(self):
         state_idx = self.state_counter % 3
         return self.state_types[state_idx]
-
+    
     def refresh_ui(self):
-        # Update PC Label
-        self.pc_label.setText(f"PC: {self.pc}")
+        # update labels
+        self.pc_label.setText(f"Program Counter: {self.pc}")
         self.state_label.setText(f"Current State: {self.get_state()}")
-        
+        dc_text = self.dc_output[1] if self.dc_output != None else 'N/A'
+        self.decode_label.setText(f"Current Activity: {dc_text}")
+
         # Update Registers
         for i in range(len(self.registers)):
-            self.reg_labels[i].setText(f"R{i}: {self.registers[i].read_reg()}")
-        
+            reg_idx = len(self.registers) - 1 - i
+            self.reg_labels[i].setText(f"R{reg_idx}: {self.registers[reg_idx].read_reg()}")
+            self.reg_labels[i].setStyleSheet("font-family: 'Segoe UI', sans-serif; font-size: 13px; border: 2px solid #444; padding: 15px; background: #e7f6ff;")
+
+        self.mux_frame.setStyleSheet("background-color: #e7f6ff;")
+        self.demux_frame.setStyleSheet("background-color: #e7f6ff;")
+        self.alu_symbol.draw_alu_inputs(self.dx.get_data(0), self.dx.get_data(1))
+        self.alu_symbol.setStyleSheet("font-family: monospace; font-size: 15px;")
+        self.alu_symbol.update_alu_color('e7f6ff')
+
+        if self.dc_output != None:
+            current_selection = self.dc_output[0]
+            #print(current_selection)
+            if current_selection < 4:
+                highlight_idx = len(self.registers) - 1 - current_selection
+                self.reg_labels[highlight_idx].setStyleSheet("font-family: 'Segoe UI', sans-serif; font-size: 13px; font-weight: bold; border: 2px solid #444; padding: 15px; background: #8dcfec;")
+            elif current_selection == 4:
+                self.mux_frame.setStyleSheet("font-family: monospace; font-size: 15px; font-weight: bold; background: #8dcfec;")
+            elif current_selection == 5:
+                self.demux_frame.setStyleSheet("font-family: monospace; font-size: 15px; font-weight: bold; background: #8dcfec;")
+            elif current_selection == 6 or current_selection == 7:
+                self.alu_symbol.update_alu_color('8dcfec')
+                self.alu_symbol.draw_alu_inputs(self.dx.get_data(0), self.dx.get_data(1))
+                self.alu_symbol.setStyleSheet("font-family: monospace; font-size: 15px; font-weight: bold")
+
         # Update RAM
         for i in self.ram.get_ram():
-            #self.ram_table.setItem(i, 0, QTableWidgetItem(f"{i:04b}"))
-            self.ram_table.setItem(i, 0, QTableWidgetItem(f"{i}"))
+            self.ram_table.setItem(i, 0, QTableWidgetItem(f"{i:04b}"))
+            #self.ram_table.setItem(i, 0, QTableWidgetItem(f"{i}"))
             if self.ram.get_ram()[i] == None:
                 content = 'XXXXXXXX'
             else:
-                #content = format(self.ram.get_ram()[i], '08b')
-                content = self.ram.get_ram()[i]
+                content = format(self.ram.get_ram()[i], '08b')
+                #content = self.ram.get_ram()[i]
             self.ram_table.setItem(i, 1, QTableWidgetItem(str(content)))
-        
+            
         self.ram_table.selectRow(self.pc.getCounter())
 

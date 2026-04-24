@@ -3,20 +3,26 @@ class Decoder:
         self.op = None
         self.output = None
         self.decoder = {
-            0 : 'gpr_0',
-            1 : 'gpr_1',
-            2 : 'gpr_2',
-            3 : 'gpr_3',
-            4 : 'mux',
-            5 : 'demux',
-            6 : 'alu_add',
-            7 : 'alu_minus',
-            8 : 'and_a',
-            9 : 'ram_we',
+            0 : 'Writing to Register 0',
+            1 : 'Writing to Register 1',
+            2 : 'Writing to Register 2',
+            3 : 'Writing to Register 3',
+            4 : 'Storing to Multiplexer',
+            5 : 'Storing to De-multiplexer',
+            6 : 'Adding numbers in ALU',
+            7 : 'Subtracting numbers in ALU',
+            8 : 'Testing if result is negative',
+            9 : 'Writing result to RAM',
         }
     
     def get_decoder(self):
         return self.decoder
+
+    def get_output(self):
+        return self.output
+    
+    def get_active_selection(self):
+        return self.decoder.get(self.op) if self.op != None else None
 
 
 

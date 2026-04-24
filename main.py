@@ -1,26 +1,16 @@
 # explanation!!!
 
 import sys
-<<<<<<< Updated upstream
 
-import core, programs, tests, ui
-
-def main():
-    core.cpu.run_cpu()
-
-
-    
-
-    
-=======
-import controller, core, ui
+import core, ui
 from core.alu import ALU
-from core.cpu import run_cpu, fetch, decode, execute
+#from core.cpu import run_cpu, fetch, decode, execute
+from core.cpu import initGPR
 from core.decoder import Decoder
 from core.demux import DEMUX
 from core.mux import MUX
 from core.ram import RAM
-from core.register import Register, InstructionRegister, ProgramCounter, initGPR
+from core.register import Register, InstructionRegister, ProgramCounter
 from core.utils import *
 
 from ui.register_display import RegisterDisplay
@@ -47,6 +37,4 @@ def main():
     gui.show()
     app.exec()
 
->>>>>>> Stashed changes
-if __name__ == '__main__':
-    sys.exit(main())
+main()

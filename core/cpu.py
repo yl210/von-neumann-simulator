@@ -1,17 +1,12 @@
 import sys
 
-<<<<<<< Updated upstream
-from register import Register, ProgramCounter, InstructionRegister
-from ram import RAM
-from mux import MUX
-from demux import DEMUX
-from decoder import Decoder
-from alu import ALU
-from utils import *
-=======
+from core.register import Register, ProgramCounter, InstructionRegister
+from core.ram import RAM
+from core.mux import MUX
+from core.demux import DEMUX
+from core.decoder import Decoder
+from core.alu import ALU
 from core.utils import *
->>>>>>> Stashed changes
-
 
 def initGPR():
     gpr = []
