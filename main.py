@@ -23,6 +23,7 @@ from PyQt6.QtCore import QTimer, Qt, QPoint, QRect
 from PyQt6.QtGui import QPainter, QPen, QPolygon, QColor, QFont
 
 def main():
+    # create instances
     pc = ProgramCounter(0)
     alu = ALU()
     dc = Decoder()
@@ -32,6 +33,7 @@ def main():
     gpr = initGPR()
     ir = InstructionRegister(0)
 
+    # gui
     app = QApplication(sys.argv)
     gui = EmulatorGUI(pc, ir, ram, dc, gpr, mx, dx, alu)
     gui.show()

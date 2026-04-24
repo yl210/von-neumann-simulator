@@ -1,5 +1,6 @@
 from core.utils import format_byte
 
+# inheritance
 class Register:
     def __init__(self, data):
         self.data = data

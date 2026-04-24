@@ -2,6 +2,7 @@ class Decoder:
     def __init__(self):
         self.op = None
         self.output = None
+        # codes which selections correspond to which action for execution
         self.decoder = {
             0 : 'Writing to Register 0',
             1 : 'Writing to Register 1',

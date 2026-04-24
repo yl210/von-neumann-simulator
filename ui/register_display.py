@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLabel, QFrame
 
+# register display
 class RegisterDisplay(QWidget):
     def __init__(self):
         super().__init__()
@@ -15,7 +16,7 @@ class RegisterDisplay(QWidget):
 
     def update_values(self, values):
         for i, val in enumerate(values[::-1]):
-            #self.labels[i].setText(f"R{i}: {val:08b}")
+            #self.labels[i].setText(f"R{i}: {val:08b}") # enable to convert decimal -> binary
             self.labels[i].setStyleSheet("font-family: monospace; font-size: 13px; margin-bottom: 3px; background-color: #e7f6ff;")
             self.labels[i].setText(f"R{i}: {val}")
     

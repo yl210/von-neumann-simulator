@@ -1,4 +1,4 @@
-# issue here
+# formats into 0x string
 def format_byte(input):
     if isinstance(input, bytearray):
         return (f'0x{input[0]:02x}')

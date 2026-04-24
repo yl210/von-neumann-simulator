@@ -10,6 +10,7 @@ class ALU:
         }
         self.output_type = ''
     
+    # defensive programming
     def has_valid_inputs(self, a, b):
         if a != None and b != None:
             self.a = a
@@ -18,14 +19,12 @@ class ALU:
         return False
     
     def add(self):
-        #print(f'a: {self.a}, b: {self.b}')
         if not ALU.has_valid_inputs:
             return None
         self.outputs['+'] = self.a + self.b
         return '+'
     
     def sub(self):
-        #print(f'a: {self.a}, b: {self.b}')
         if not ALU.has_valid_inputs:
             return None
         self.outputs['-'] = self.a - self.b

@@ -7,6 +7,7 @@ class Background(QWidget):
         super().__init__(parent)
         self.bg = QPixmap(image_path)
 
+    # sets wire background
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.drawPixmap(self.rect(), self.bg)
