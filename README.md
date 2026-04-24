@@ -64,7 +64,30 @@ self.decoder = {
             9 : 'Writing result to RAM',
         }
   ```
+### Executing Instructions
+Based on what the instruction is from the decoder, the CPU will then execute the instruction. All of this happens in the model in the execute() function.
 
+### State Management
+To keep track of what state my CPU is in, I implement a simple state machine to allow the user to know what cycle of instruction fetching/decoding/executing the process is currently in:
+```
+def manual_step(self):
+        state = self.get_state()
+        if state == 'Fetching':
+            try:
+                fetch(self.pc, self.ir, self.ram)
+            except ValueError:
+                self.step_btn.setEnabled(False)
+                self.auto_btn.setEnabled(False)
+                self.state_counter = -1
+                self.timer.stop()
+                return
+        elif state == 'Decoding':
+            self.ir_data = self.ir.read_from_ir()
+            op = self.ir.opcode
+            self.dc_output = decode(self.dc.get_decoder(), op)
+        elif state == 'Executing':
+            execute(self.dc_output, self.ir_data, self.gpr, self.ram, self.mx, self.dx, self.ir, self.alu, self.pc)
+```
 
 
 
