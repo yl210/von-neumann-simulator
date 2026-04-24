@@ -3,6 +3,32 @@
 ## Motivation
 Von Neumann computer architecture is the foundation of most modern general-purpose computing. This is taught in 18-100 Introduction to ECE through a highly abstracted computer architecture model. As both a past-18100 student and current TA, the problem is that tracing through each step can tedious and error-prone as the steps are very intricate. So, I wanted to make a simulator as an educational tool for helping students understand the basics of computer architecture and how it would work with stronger visualization.
 
+## Code Organization
+My goals were:
+- focusing on modularity
+- code clarity
+since I knew there would be a lot of interfacing between different components, it would get really complicated if I didn't organize things from top-down design.
+
+von Neumann architecture gives itself nicely to object-oriented programming, so my code is organized like so:
+- alu.py: all functions related to alu
+- cpu.py: includes fetch, decode, execute functions for cycling
+- decoder.py: contains code mapping instructions to executable states
+- demux.py: stores data from currently selected data line
+- mux.py: stores data from linked register
+- ram.py: stores instructions + data
+- register.py: defines register class, including program counter and instruction register as children
+- utils.py: conversion & formatting functions
+
+The above defines and operates my entire model.
+
+Then, I have a UI folder with
+- alu_symbol.py: draws alu
+- background.py: draws wire background
+- main_window.py: functions that handle all drawing
+- register_display.py: handles making the actual register views
+
+Finally, to make better organization, I only have a main.py file where you actually run the code that sets up the parameters and runs the simulator.
+
 ## Basics of von Neumann Architecture
 The components of von Neumann architecture are:
 - RAM (random access memory: long-term storage for operating instructions and data
@@ -13,16 +39,6 @@ The components of von Neumann architecture are:
 - demux: 'routes' the data from the mux to the specified output (in this case, the arithmetic logic unit).
 - arithmetic logic unit: the unit that we can specify to perform adding/subtracting/detecting 0, etc.
 - program counter: keeps track of the current address we are reading from
-
-This gives itself nicely to object-oriented programming, so my code is organized like so:
-- '''alu.py'''
-- '''cpu.py'''
-- '''decoder.py'''
-- '''demux.py'''
-- '''mux.py'''
-- '''ram.py'''
-- '''register.py'''
-- '''utils.py'''
 
 ## Moving Through the Computer
 
