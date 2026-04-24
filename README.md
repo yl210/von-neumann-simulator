@@ -16,13 +16,13 @@ The components of von Neumann architecture are:
 
 ## Moving Through the Computer
 
-# Interpreting Instructions
+### Interpreting Instructions
 Each data corresponding to an address is actually an instruction that tells the CPU what to do next in a specific format. For example, the instruction at address 1 is: 00011110. Each instruction is broken into two 4-bit sections. The first four bits are the op-code, which tell the decoder what to do. The last four bits are the operand, which tell the decoder what address in the RAM to read/write form. In this example:
 - 0001 = 1 -> select R1 and write the data from the given address to it
 - 1110 = 13 -> address of data in RAM
 So taken together 0001 and 1110 mean: 'write the data from the 13th line in RAM into R1'
 
-# Decoding Instructions
+### Decoding Instructions
 
 
 
