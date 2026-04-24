@@ -176,7 +176,7 @@ class EmulatorGUI(QMainWindow):
 
     def toggle_auto(self):
         if self.auto_btn.isChecked():
-            self.timer.start(400)
+            self.timer.start(600)
             self.auto_btn.setText("STOP")
         else:
             self.timer.stop()
