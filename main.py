@@ -1,3 +1,10 @@
+'''
+GRADING FEATURES
+1. CPU cycle machine: core.cpu.py line 20
+2. Branch instruction: Manual increment until instruction 11 to watch program jump
+3. Inheritance w/ MVC: register.py + ui.main_window.py line 218
+4. UX Experience: ui.main_window.py, line 231
+'''
 import sys
 
 import core, ui
